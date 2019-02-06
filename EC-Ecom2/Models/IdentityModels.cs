@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using EC_Ecom2.Models.Products;
+using EC_Ecom2.Models.Checkout;
 
 namespace EC_Ecom2.Models
 {
@@ -29,5 +31,17 @@ namespace EC_Ecom2.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<Product> Products { get; set; }
+        public DbSet<CategoryProduct> CategoryProducts { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Cartitem> Cartitems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+
+        public DbSet<Orderitem> Orderitems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        public System.Data.Entity.DbSet<EC_Ecom2.Models.Checkout.CartViewModel> CartViewModels { get; set; }
     }
 }

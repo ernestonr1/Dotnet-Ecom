@@ -1,0 +1,86 @@
+﻿@model EC_Ecom2.Models.Checkout.CartViewModel
+
+@{
+  ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+  @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+  <tr>
+    <th>
+      @Html.DisplayNameFor(model => model.Cart.Total)
+    </th>
+    <th>
+      @Html.DisplayNameFor(model => model.Cart.State)
+    </th>
+    <th>
+      @Html.DisplayNameFor(model => model.Cart.SessionId)
+    </th>
+    <th>
+      @Html.DisplayNameFor(model => model.Cart.UserId)
+    </th>
+    <th></th>
+  </tr>
+
+  @*@foreach (var item in Model.Cart)
+    {*@
+  <tr>
+    <td>
+      @Html.DisplayFor(modelItem => Model.Cart.Total)
+    </td>
+    <td>
+      @Html.DisplayFor(modelItem => Model.Cart.State)
+    </td>
+    <td>
+      @Html.DisplayFor(modelItem => Model.Cart.SessionId)
+    </td>
+    <td>
+      @Html.DisplayFor(modelItem => Model.Cart.UserId)
+    </td>
+    @*<td>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Cart.Id }) |
+        @Html.ActionLink("Details", "Details", new { id = Model.Cart.Id }) |
+        @Html.ActionLink("Delete", "Delete", new { id = Model.Cart.Id })
+      </td>*@
+  </tr>
+  @*}*@
+
+</table>
+
+@using (Html.BeginForm("HandleCart", "Carts", FormMethod.Post, new { id = "cartform", name = "cartform" }))
+{
+  @Html.AntiForgeryToken()
+
+
+  foreach (var item in Model.Cartitems)
+  {
+    @Html.HiddenFor(modelItem => item.Product.Id)
+    @Html.HiddenFor(modelItem => item.Cart.Id)
+    @Html.HiddenFor(modelItem => item.Id)
+
+    @Html.DisplayFor(modelItem => item.Product.Id)
+
+    @Html.DisplayFor(modelItem => item.Product.Name)
+    <span>Cartitem total: </span>@Html.DisplayFor(modelItem => item.CartitemTotal)
+
+    @Html.EditorFor(modelItem => item.Quantity,
+      new
+      {
+        htmlAttributes = new
+        {
+          @class = "form-control",
+          @id = item.Product.Id,
+          @cartId = item.Cart.Id,
+          @cartitemId = item.Id,
+          @name = "quantity"
+        }
+      })
+    // Sätt två submit-knappar. En för update och en för place order.
+  }
+  <input type="submit" name="submitButton" value="Uppdatera"  /><br />
+  <input type="submit" name="submitButton" value="Lägg order"  /><br />
+}
