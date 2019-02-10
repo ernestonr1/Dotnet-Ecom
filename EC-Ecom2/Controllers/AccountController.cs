@@ -17,6 +17,7 @@ namespace EC_Ecom2.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -76,9 +77,30 @@ namespace EC_Ecom2.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            
             switch (result)
             {
                 case SignInStatus.Success:
+                    System.Diagnostics.Debug.WriteLine("UserId is: " + UserManager.FindByName(model.Email)?.Id);
+                    string sessionId = System.Web.HttpContext.Current.Session.SessionID;
+                    var existingCart = from c in db.Carts
+                                       where c.SessionId == sessionId && c.State == "active"
+                                       select c;
+                    if (existingCart.Any())
+                    {
+                        
+                        var cart = existingCart.First();
+                        System.Diagnostics.Debug.WriteLine("SessionId is: " + cart.SessionId);
+                        var user = User;
+                        //user.
+                        cart.UserId = UserManager.FindByName(model.Email)?.Id;
+                        //System.Diagnostics.Debug.WriteLine("UserName1 is: " + user.Identity.GetUserName());
+                        //System.Diagnostics.Debug.WriteLine("UserName2 is: " + user.Identity.Name);
+                        //System.Diagnostics.Debug.WriteLine("UserId 2 is: " + User.Identity.ToString());
+                        System.Diagnostics.Debug.WriteLine("UserId on cart is: " + cart.UserId);
+                        db.SaveChanges();
+                    }
+
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
