@@ -81,6 +81,15 @@
       })
     // Sätt två submit-knappar. En för update och en för place order.
   }
-  <input type="submit" name="submitButton" value="Uppdatera"  /><br />
-  <input type="submit" name="submitButton" value="Lägg order"  /><br />
+  <input type="submit" name="submitButton" value="Uppdatera"  
+         @{ if(!Model.Cartitems.Any()) { 
+             @:disabled="disabled" 
+        } }
+         /><br />
+
+  <input type="submit" name="submitButton" value="Lägg order"  
+         @{ if(!Model.Cartitems.Any()) { 
+             @:disabled="disabled" 
+        } }
+         /><br />
 }

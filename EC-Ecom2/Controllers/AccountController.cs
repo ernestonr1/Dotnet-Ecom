@@ -9,6 +9,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using EC_Ecom2.Models;
+using EC_Ecom2.Models.Users;
+using System.Data.Entity.Validation;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace EC_Ecom2.Controllers
 {
@@ -69,6 +72,7 @@ namespace EC_Ecom2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            System.Diagnostics.Debug.WriteLine("0. ReturnUrl is: " + Request.Url);
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -81,26 +85,21 @@ namespace EC_Ecom2.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    System.Diagnostics.Debug.WriteLine("UserId is: " + UserManager.FindByName(model.Email)?.Id);
+                    
                     string sessionId = System.Web.HttpContext.Current.Session.SessionID;
                     var existingCart = from c in db.Carts
                                        where c.SessionId == sessionId && c.State == "active"
                                        select c;
                     if (existingCart.Any())
-                    {
-                        
+                    {   
                         var cart = existingCart.First();
                         System.Diagnostics.Debug.WriteLine("SessionId is: " + cart.SessionId);
                         var user = User;
-                        //user.
                         cart.UserId = UserManager.FindByName(model.Email)?.Id;
-                        //System.Diagnostics.Debug.WriteLine("UserName1 is: " + user.Identity.GetUserName());
-                        //System.Diagnostics.Debug.WriteLine("UserName2 is: " + user.Identity.Name);
-                        //System.Diagnostics.Debug.WriteLine("UserId 2 is: " + User.Identity.ToString());
-                        System.Diagnostics.Debug.WriteLine("UserId on cart is: " + cart.UserId);
                         db.SaveChanges();
                     }
-
+                    //if()
+                    System.Diagnostics.Debug.WriteLine("ReturnUrl is: " + returnUrl);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -177,13 +176,65 @@ namespace EC_Ecom2.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    // Temp code
+                    // this object will store the role we are about to create.
+                    // This code should run when a user is registered and we want that
+                    // user to have a specific role. After that it can be commented out.
+                    //var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+                    //var roleManager = new RoleManager<IdentityRole>(roleStore);
+                    //await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    //await UserManager.AddToRoleAsync(user.Id, "Admin");
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    /////////////////////////////////////////////
+                    // Creating UserProfile and adding data to it
+                    /////////////////////////////////////////////
+
+                    UserProfile userProfile = new UserProfile();
+                    System.Diagnostics.Debug.WriteLine("UserId is: " + user.Id);
+                    //cart.UserId = UserManager.FindByName(model.Email)?.Id;
+                    //var createdUser = UserManager.FindByName(model.Email);
+                    var createdUser = db.Users.FirstOrDefault(x => x.Email == model.Email);
+                    userProfile.ApplicationUserId = createdUser.Id;
+                    userProfile.User = createdUser;
+                    userProfile.City = model.City;
+                    userProfile.Streetaddress = model.Streetaddress;
+                    userProfile.Postalcode = model.Postalcode;
+                    userProfile.Phonenumber = model.Phonenumber;
+                    db.UserProfiles.Add(userProfile);
+                    //updateDatabase();
+                    try
+                    {
+                        // Your code...
+                        // Could also be before try if you know the exception occurs in SaveChanges
+
+                        db.SaveChanges();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        foreach (var eve in e.EntityValidationErrors)
+                        {
+                            Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                                eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                            System.Diagnostics.Debug.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                                eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                                    ve.PropertyName, ve.ErrorMessage);
+                                System.Diagnostics.Debug.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                                    ve.PropertyName, ve.ErrorMessage);
+                            }
+                        }
+                        throw;
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -501,7 +552,74 @@ namespace EC_Ecom2.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+
+            
         }
         #endregion
+        private void updateDatabase()
+        {
+            db.SaveChanges();
+        }
+
+        //////////////////////////////////////////////////////////////////////////////
+        // This is my login function. It is used when the user wants to place an order
+        //////////////////////////////////////////////////////////////////////////////
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult CheckoutLogin(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Login
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CheckoutLogin(LoginViewModel model, string returnUrl)
+        {
+            System.Diagnostics.Debug.WriteLine("0. ReturnUrl is: " + Request.Url);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
+            switch (result)
+            {
+                case SignInStatus.Success:
+
+                    string sessionId = System.Web.HttpContext.Current.Session.SessionID;
+                    var existingCart = from c in db.Carts
+                                       where c.SessionId == sessionId && c.State == "active"
+                                       select c;
+                    if (existingCart.Any())
+                    {
+                        var cart = existingCart.First();
+                        System.Diagnostics.Debug.WriteLine("SessionId is: " + cart.SessionId);
+                        var user = User;
+                        cart.UserId = UserManager.FindByName(model.Email)?.Id;
+                        db.SaveChanges();
+                    }
+                    //if()
+                    System.Diagnostics.Debug.WriteLine("ReturnUrl is: " + returnUrl);
+                    return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(model);
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////////
+        // This is my login function. It is used when the user wants to place an order
+        //////////////////////////////////////////////////////////////////////////////
     }
 }

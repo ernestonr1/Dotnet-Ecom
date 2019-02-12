@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using EC_Ecom2.Models;
+using EC_Ecom2.Models.App;
 using EC_Ecom2.Models.Checkout;
 
 namespace EC_Ecom2.Controllers.Checkout
@@ -157,7 +158,7 @@ namespace EC_Ecom2.Controllers.Checkout
         // Handles cart.
         // Handles both updating of cart and placing of order.
         //public ActionResult HandleCart(int CartId, int CartitemId, int newQuantity)
-        public ActionResult HandleCart(string submitButton)
+        public ActionResult HandleCart(string submitButton, string returnUrl)
         {
             //System.Diagnostics.Debug.WriteLine("Inside HandleCart.");
             string cartId = Request.Form["item.Cart.Id"];
@@ -246,35 +247,46 @@ namespace EC_Ecom2.Controllers.Checkout
                     ///////////////////
                     // Place the order.
                     ///////////////////
-                    Order order = new Order();
-                    order.Streetaddress = "Happy street 1";
-                    string sessionIdForOrder = System.Web.HttpContext.Current.Session.SessionID;
-                    var cartForOrderIQueriable = from c in db.Carts
-                                     where c.SessionId == sessionIdForOrder && c.State == "active"
-                                     select c;
-                    var cartForOrder = cartForOrderIQueriable.FirstOrDefault();
-                    order.Total = cartForOrder.Total;
-                    order.SessionId = cartForOrder.SessionId;
-                    order.ShippingCost = 4.50;
-                    order.State = "New";
-                    db.Orders.Add(order);
-                    db.SaveChanges();
-                    var cartItemsForOrder = cartForOrder.Cartitems;
-                    ICollection<Orderitem> Orderitems = new List<Orderitem>();
-                    foreach (var item in cartItemsForOrder)
+                    if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
                     {
-                        Orderitem orderItem = new Orderitem();
-                        orderItem.OrderId = order.Id;
-                        orderItem.OrderitemTotal = item.CartitemTotal;
-                        orderItem.ProductId = item.ProductId;
-                        orderItem.Quantity = item.Quantity;
-                        db.Orderitems.Add(orderItem);
-                        Orderitems.Add(orderItem);
+                        Order order = new Order();
+                        Admin admin = db.Admins.Find(1);
+                        order.Streetaddress = "Happy street 1";
+                        string sessionIdForOrder = System.Web.HttpContext.Current.Session.SessionID;
+                        var cartForOrderIQueriable = from c in db.Carts
+                                                     where c.SessionId == sessionIdForOrder && c.State == "active"
+                                                     select c;
+                        var cartForOrder = cartForOrderIQueriable.FirstOrDefault();
+                        order.Total = cartForOrder.Total;
+                        admin.TotalIncome += (decimal)order.Total;
+                        order.UserId = cartForOrder.UserId;
+                        order.SessionId = cartForOrder.SessionId;
+                        order.ShippingCost = 4.50;
+                        order.State = "New";
+                        db.Orders.Add(order);
+                        db.SaveChanges();
+                        var cartItemsForOrder = cartForOrder.Cartitems;
+                        ICollection<Orderitem> Orderitems = new List<Orderitem>();
+                        foreach (var item in cartItemsForOrder)
+                        {
+                            Orderitem orderItem = new Orderitem();
+                            orderItem.OrderId = order.Id;
+                            orderItem.OrderitemTotal = item.CartitemTotal;
+                            orderItem.ProductId = item.ProductId;
+                            orderItem.Quantity = item.Quantity;
+                            db.Orderitems.Add(orderItem);
+                            Orderitems.Add(orderItem);
+                        }
+                        cartForOrder.State = "ordered";
+                        db.SaveChanges();
+                        //return View("Index", "Orders");
+                        return RedirectToAction("Index", "Orders");
                     }
-                    cartForOrder.State = "ordered";
-                    db.SaveChanges();
-                    //return View("Index", "Orders");
-                    return RedirectToAction("Index", "Orders");
+                    else
+                    {
+                        return RedirectToAction("CheckoutLogin", "Account");
+                    }
+                    
 
                 default:
                     // If they've submitted the form without a submitButton, 

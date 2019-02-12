@@ -79,6 +79,16 @@ namespace EC_Ecom2.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        /////////////////////////////////////
+        /// Adding fields for the UserProfile
+        /////////////////////////////////////
+
+        public string City { get; set; }
+        public string Streetaddress { get; set; }
+        public string Postalcode { get; set; }
+        public string Phonenumber { get; set; }
+
     }
 
     public class ResetPasswordViewModel

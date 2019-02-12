@@ -5,12 +5,15 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using EC_Ecom2.Models.Products;
 using EC_Ecom2.Models.Checkout;
+using EC_Ecom2.Models.Users;
 
 namespace EC_Ecom2.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        public int ProfileId { get; set; }
+        //public Profile Profile { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -43,5 +46,9 @@ namespace EC_Ecom2.Models
         public DbSet<Order> Orders { get; set; }
 
         public System.Data.Entity.DbSet<EC_Ecom2.Models.Checkout.CartViewModel> CartViewModels { get; set; }
+
+        public DbSet<UserProfile> UserProfiles { get; set; }
+
+        public System.Data.Entity.DbSet<EC_Ecom2.Models.App.Admin> Admins { get; set; }
     }
 }
