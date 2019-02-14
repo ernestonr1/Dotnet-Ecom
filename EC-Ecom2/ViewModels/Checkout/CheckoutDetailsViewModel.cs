@@ -20,5 +20,7 @@ namespace EC_Ecom2.ViewModels.Checkout
 
         public int UserProfileId { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+
+        public double ShippingCost { get; set; }
     }
 }

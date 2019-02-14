@@ -50,7 +50,7 @@ namespace EC_Ecom2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,Price")] Product product)
+        public ActionResult Create([Bind(Include = "Id,Name,Description,Price,MainImageUrl")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +82,7 @@ namespace EC_Ecom2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,Price")] Product product)
+        public ActionResult Edit([Bind(Include = "Id,Name,Description,Price,MainImageUrl")] Product product)
         {
             if (ModelState.IsValid)
             {

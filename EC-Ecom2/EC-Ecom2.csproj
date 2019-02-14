@@ -232,6 +232,10 @@
     <Compile Include="Migrations\201902131444124_AddFirstMiddleLastNamesToUserProfile.Designer.cs">
       <DependentUpon>201902131444124_AddFirstMiddleLastNamesToUserProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902141601316_AddMainImageUrlToProduct.cs" />
+    <Compile Include="Migrations\201902141601316_AddMainImageUrlToProduct.Designer.cs">
+      <DependentUpon>201902141601316_AddMainImageUrlToProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\App\Admin.cs" />
@@ -343,6 +347,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Images\" />
     <Folder Include="EcEcomApp\" />
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +405,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902131444124_AddFirstMiddleLastNamesToUserProfile.resx">
       <DependentUpon>201902131444124_AddFirstMiddleLastNamesToUserProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902141601316_AddMainImageUrlToProduct.resx">
+      <DependentUpon>201902141601316_AddMainImageUrlToProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

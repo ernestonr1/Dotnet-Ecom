@@ -333,6 +333,8 @@ namespace EC_Ecom2.Controllers.Checkout
                        where c.UserId == checkoutDetailsViewModel.ApplicationUserId && c.State == "active"
                        select c;
             checkoutDetailsViewModel.Cart = cart.First();
+            Admin admin = db.Admins.Find(1);
+            checkoutDetailsViewModel.ShippingCost = admin.ShippingCost;
             return View(checkoutDetailsViewModel);
         }
 
@@ -355,11 +357,12 @@ namespace EC_Ecom2.Controllers.Checkout
                                              where c.SessionId == sessionIdForOrder && c.State == "active"
                                              select c;
                 var cartForOrder = cartForOrderIQueriable.FirstOrDefault();
-                order.Total = cartForOrder.Total;
                 admin.TotalIncome += (decimal)order.Total;
                 order.UserId = cartForOrder.UserId;
                 order.SessionId = cartForOrder.SessionId;
-                order.ShippingCost = 4.50;
+                //order.ShippingCost = 4.50;
+                order.ShippingCost = admin.ShippingCost;
+                order.Total = cartForOrder.Total + admin.ShippingCost;
                 order.State = "New";
                 db.Orders.Add(order);
                 db.SaveChanges();

@@ -13,5 +13,7 @@ namespace EC_Ecom2.Models.Products
         public double Price { get; set; }
 
         public virtual ICollection<CategoryProduct> CategoryProducts { get; set; }
+
+        public string MainImageUrl { get; set; }
     }
 }
