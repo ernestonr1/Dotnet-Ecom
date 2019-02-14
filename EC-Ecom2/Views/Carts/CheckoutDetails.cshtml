@@ -1,0 +1,143 @@
+﻿@model EC_Ecom2.ViewModels.Checkout.CheckoutDetailsViewModel
+
+@{
+  ViewBag.Title = "CheckoutDetails";
+}
+
+<h2>CheckoutDetails</h2>
+
+<div>Cart total is: @Model.Cart.Total</div>
+
+@foreach (var item in Model.Cart.Cartitems)
+{
+  @Html.HiddenFor(modelItem => item.Product.Id)
+
+  @Html.HiddenFor(modelItem => item.Cart.Id)
+  @Html.HiddenFor(modelItem => item.Id)
+
+  <div>Product id: @Html.DisplayFor(modelItem => item.Product.Id)</div>
+  <div>Quantity: @Html.DisplayFor(modelItem => item.Quantity)</div>
+
+  <div>Product name: @Html.DisplayFor(modelItem => item.Product.Name)</div>
+  <span>Cartitem total: </span>@Html.DisplayFor(modelItem => item.CartitemTotal)
+    <div>-------------------------</div>
+}
+
+@using (Html.BeginForm("Payment", "Carts", FormMethod.Post, new { id = "checkout-details", name = "checkout-details" }))
+{
+  @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+      <h4>Dubbelkolla dina uppgifter</h4>
+      <hr />
+      @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+      @Html.HiddenFor(model => model.Id)
+
+      @*<div class="form-group">
+      @Html.LabelFor(model => model.CartId, "CartId", htmlAttributes: new { @class = "control-label col-md-2" })
+      <div class="col-md-10">
+        @Html.DropDownList("CartId", null, htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.CartId, "", new { @class = "text-danger" })
+      </div>
+    </div>*@
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.ApplicationUser.Email, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.ApplicationUser.Email)
+          @Html.ValidationMessageFor(model => Model.ApplicationUser.Email, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.ApplicationUser.UserName, "UserName", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.ApplicationUser.UserName)
+          @Html.ValidationMessageFor(model => Model.ApplicationUser.UserName, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.Firstname, "Firstname", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.Firstname)
+          @Html.ValidationMessageFor(model => Model.UserProfile.Firstname, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.Middlename, "Middlename", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.Middlename)
+          @Html.ValidationMessageFor(model => Model.UserProfile.Middlename, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.Lastname, "Lastname", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.Lastname)
+          @Html.ValidationMessageFor(model => Model.UserProfile.Lastname, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.Streetaddress, "Streetaddress", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.Streetaddress)
+          @Html.ValidationMessageFor(model => Model.UserProfile.Streetaddress, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.Postalcode, "Postalcode", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.Postalcode)
+          @Html.ValidationMessageFor(model => Model.UserProfile.Postalcode, "", new { @class = "text-danger" })
+        </div>
+      </div>
+      
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.Phonenumber, "Phonenumber", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.Phonenumber)
+          @Html.ValidationMessageFor(model => Model.UserProfile.Phonenumber, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfile.City, "City", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(modelItem => Model.UserProfile.City)
+          @Html.ValidationMessageFor(model => Model.UserProfile.City, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      @*<div class="form-group">
+      @Html.LabelFor(model => model.ApplicationUserId, htmlAttributes: new { @class = "control-label col-md-2" })
+      <div class="col-md-10">
+        @Html.EditorFor(model => model.ApplicationUserId, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ApplicationUserId, "", new { @class = "text-danger" })
+      </div>
+    </div>
+
+    <div class="form-group">
+      @Html.LabelFor(model => model.UserProfileId, "UserProfileId", htmlAttributes: new { @class = "control-label col-md-2" })
+      <div class="col-md-10">
+        @Html.DropDownList("UserProfileId", null, htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.UserProfileId, "", new { @class = "text-danger" })
+      </div>
+    </div>*@
+
+      <div>Om det här stämmer fortsätt till betalning</div>
+      <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <input type="submit" value="Till betalning" class="btn btn-default" />
+        </div>
+      </div>
+    </div>
+}
+
+<div>
+  @Html.ActionLink("Tillbaka till varukorgen", "Index")
+</div>

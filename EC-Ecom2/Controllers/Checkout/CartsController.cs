@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using EC_Ecom2.Models;
 using EC_Ecom2.Models.App;
 using EC_Ecom2.Models.Checkout;
+using EC_Ecom2.ViewModels.Checkout;
+using Microsoft.AspNet.Identity;
 
 namespace EC_Ecom2.Controllers.Checkout
 {
@@ -162,8 +164,8 @@ namespace EC_Ecom2.Controllers.Checkout
         {
             //System.Diagnostics.Debug.WriteLine("Inside HandleCart.");
             string cartId = Request.Form["item.Cart.Id"];
-            System.Diagnostics.Debug.WriteLine("CartId is: " + cartId[0]);
-            System.Diagnostics.Debug.WriteLine("CartId2 is: " + Request.Form["item.Cart.Id"]);
+            //System.Diagnostics.Debug.WriteLine("CartId is: " + cartId[0]);
+            //System.Diagnostics.Debug.WriteLine("CartId2 is: " + Request.Form["item.Cart.Id"]);
 
             var cartItemIds = Request.Form["item.Id"];
             var cartItemIdsArray = cartItemIds.Split(',');
@@ -242,11 +244,18 @@ namespace EC_Ecom2.Controllers.Checkout
                     cartViewModel.Cartitems = cartItems.ToList();
                     return View("CartIndex", cartViewModel);
                 // Getting the entire cart and redirecting to cartindex ends here
+                case "Checkoutdetaljer":
+
+                    return RedirectToAction("CheckoutDetails");
 
                 case "Lägg order":
                     ///////////////////
                     // Place the order.
                     ///////////////////
+                    /* Now an order is created here automatic when the button is clicked.
+                     * All this code has to be moved from here. Here the user should be
+                     * taken to checkout details page.                     
+                     */
                     if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
                     {
                         Order order = new Order();
@@ -294,6 +303,88 @@ namespace EC_Ecom2.Controllers.Checkout
                     return View();
             }
             return View("~/Views/Products/Index.cshtml");
+        }
+        public ActionResult CheckoutDetails()
+        {
+            CheckoutDetailsViewModel checkoutDetailsViewModel = new CheckoutDetailsViewModel();
+            checkoutDetailsViewModel.ApplicationUserId = User.Identity.GetUserId();
+            //string userId = checkoutDetailsViewModel.ApplicationUser.Id;
+            var userProfile = from u in db.UserProfiles
+                              where u.ApplicationUserId == checkoutDetailsViewModel.ApplicationUserId
+                              select u;
+            checkoutDetailsViewModel.UserProfile = userProfile.First();
+            var cart = from c in db.Carts
+                       where c.UserId == checkoutDetailsViewModel.ApplicationUserId && c.State == "active"
+                       select c;
+            checkoutDetailsViewModel.Cart = cart.First();
+            return View(checkoutDetailsViewModel);
+        }
+
+        public ActionResult Payment()
+        {
+            CheckoutDetailsViewModel checkoutDetailsViewModel = new CheckoutDetailsViewModel();
+            checkoutDetailsViewModel.ApplicationUserId = User.Identity.GetUserId();
+            //string userId = checkoutDetailsViewModel.ApplicationUser.Id;
+            var userProfile = from u in db.UserProfiles
+                              where u.ApplicationUserId == checkoutDetailsViewModel.ApplicationUserId
+                              select u;
+            checkoutDetailsViewModel.UserProfile = userProfile.First();
+            var cart = from c in db.Carts
+                       where c.UserId == checkoutDetailsViewModel.ApplicationUserId && c.State == "active"
+                       select c;
+            checkoutDetailsViewModel.Cart = cart.First();
+            return View(checkoutDetailsViewModel);
+        }
+
+        public ActionResult PlaceOrder()
+        {
+            ///////////////////
+            // Place the order.
+            ///////////////////
+            /* Now an order is created here automatic when the button is clicked.
+             * All this code has to be moved from here. Here the user should be
+             * taken to checkout details page.                     
+             */
+            if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                Order order = new Order();
+                Admin admin = db.Admins.Find(1);
+                order.Streetaddress = "Happy street 1";
+                string sessionIdForOrder = System.Web.HttpContext.Current.Session.SessionID;
+                var cartForOrderIQueriable = from c in db.Carts
+                                             where c.SessionId == sessionIdForOrder && c.State == "active"
+                                             select c;
+                var cartForOrder = cartForOrderIQueriable.FirstOrDefault();
+                order.Total = cartForOrder.Total;
+                admin.TotalIncome += (decimal)order.Total;
+                order.UserId = cartForOrder.UserId;
+                order.SessionId = cartForOrder.SessionId;
+                order.ShippingCost = 4.50;
+                order.State = "New";
+                db.Orders.Add(order);
+                db.SaveChanges();
+                var cartItemsForOrder = cartForOrder.Cartitems;
+                ICollection<Orderitem> Orderitems = new List<Orderitem>();
+                foreach (var item in cartItemsForOrder)
+                {
+                    Orderitem orderItem = new Orderitem();
+                    orderItem.OrderId = order.Id;
+                    orderItem.OrderitemTotal = item.CartitemTotal;
+                    orderItem.ProductId = item.ProductId;
+                    orderItem.Quantity = item.Quantity;
+                    db.Orderitems.Add(orderItem);
+                    Orderitems.Add(orderItem);
+                }
+                cartForOrder.State = "ordered";
+                db.SaveChanges();
+                //return View("Index", "Orders");
+                return RedirectToAction("Index", "Orders");
+                //return View();
+            }
+            else
+            {
+                return RedirectToAction("CheckoutLogin", "Account");
+            }
         }
     }
 }

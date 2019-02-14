@@ -89,6 +89,10 @@ namespace EC_Ecom2.Models
         public string Postalcode { get; set; }
         public string Phonenumber { get; set; }
 
+        public string Firstname { get; set; }
+        public string Middlename { get; set; }
+        public string Lastname { get; set; }
+
     }
 
     public class ResetPasswordViewModel

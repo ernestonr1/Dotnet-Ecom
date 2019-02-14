@@ -208,6 +208,9 @@ namespace EC_Ecom2.Controllers
                     userProfile.Streetaddress = model.Streetaddress;
                     userProfile.Postalcode = model.Postalcode;
                     userProfile.Phonenumber = model.Phonenumber;
+                    userProfile.Firstname = model.Firstname;
+                    userProfile.Middlename = model.Middlename;
+                    userProfile.Lastname = model.Lastname;
                     db.UserProfiles.Add(userProfile);
                     //updateDatabase();
                     try
@@ -607,7 +610,8 @@ namespace EC_Ecom2.Controllers
                     }
                     //if()
                     System.Diagnostics.Debug.WriteLine("ReturnUrl is: " + returnUrl);
-                    return RedirectToLocal(returnUrl);
+                    //return RedirectToLocal(returnUrl);
+                    return RedirectToAction("CheckoutDetails", "Carts");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:

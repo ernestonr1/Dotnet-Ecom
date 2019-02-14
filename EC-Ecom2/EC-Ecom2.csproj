@@ -224,12 +224,21 @@
     <Compile Include="Migrations\201902111248370_AddAdminTable.Designer.cs">
       <DependentUpon>201902111248370_AddAdminTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902122330534_AddPaymentMethodToOrder.cs" />
+    <Compile Include="Migrations\201902122330534_AddPaymentMethodToOrder.Designer.cs">
+      <DependentUpon>201902122330534_AddPaymentMethodToOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902131444124_AddFirstMiddleLastNamesToUserProfile.cs" />
+    <Compile Include="Migrations\201902131444124_AddFirstMiddleLastNamesToUserProfile.Designer.cs">
+      <DependentUpon>201902131444124_AddFirstMiddleLastNamesToUserProfile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\App\Admin.cs" />
     <Compile Include="Models\Checkout\Cart.cs" />
     <Compile Include="Models\Checkout\Cartitem.cs" />
     <Compile Include="Models\Checkout\CartViewModel.cs" />
+    <Compile Include="ViewModels\Checkout\CheckoutDetailsViewModel.cs" />
     <Compile Include="Models\Checkout\Order.cs" />
     <Compile Include="Models\Checkout\Orderitem.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -329,6 +338,8 @@
     <Content Include="Views\Admin\Edit.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Account\CheckoutLogin.cshtml" />
+    <Content Include="Views\Carts\CheckoutDetails.cshtml" />
+    <Content Include="Views\Carts\Payment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -383,6 +394,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902111248370_AddAdminTable.resx">
       <DependentUpon>201902111248370_AddAdminTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902122330534_AddPaymentMethodToOrder.resx">
+      <DependentUpon>201902122330534_AddPaymentMethodToOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902131444124_AddFirstMiddleLastNamesToUserProfile.resx">
+      <DependentUpon>201902131444124_AddFirstMiddleLastNamesToUserProfile.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

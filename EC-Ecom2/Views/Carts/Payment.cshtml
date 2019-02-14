@@ -1,0 +1,126 @@
+﻿@model EC_Ecom2.ViewModels.Checkout.CheckoutDetailsViewModel
+
+@{
+  ViewBag.Title = "CheckoutDetails";
+}
+
+<h2>Betalning</h2>
+
+<h3>Summa att betala: @Model.Cart.Total</h3>
+
+@foreach (var item in Model.Cart.Cartitems)
+{
+  @Html.HiddenFor(modelItem => item.Product.Id)
+
+  @Html.HiddenFor(modelItem => item.Cart.Id)
+  @Html.HiddenFor(modelItem => item.Id)
+
+  <div>Product id: @Html.DisplayFor(modelItem => item.Product.Id)</div>
+  <div>Quantity: @Html.DisplayFor(modelItem => item.Quantity)</div>
+
+  <div>Product name: @Html.DisplayFor(modelItem => item.Product.Name)</div>
+  <span>Cartitem total: </span>@Html.DisplayFor(modelItem => item.CartitemTotal)
+  <div>-------------------------</div>
+}
+  <h3>Dina uppgifter</h3>
+<div>Förnamn: @Html.DisplayFor(modelItem => Model.UserProfile.Firstname)</div>
+<div>Mellannamn: @Html.DisplayFor(modelItem => Model.UserProfile.Middlename)</div>
+<div>Efternamn: @Html.DisplayFor(modelItem => Model.UserProfile.Lastname)</div>
+<div>Gata: @Html.DisplayFor(modelItem => Model.UserProfile.Streetaddress)</div>
+<div>Postnummer: @Html.DisplayFor(modelItem => Model.UserProfile.Postalcode)</div>
+<div>Stad: @Html.DisplayFor(modelItem => Model.UserProfile.City)</div>
+<div>Telefon: @Html.DisplayFor(modelItem => Model.UserProfile.Phonenumber)</div>
+@using (Html.BeginForm("PlaceOrder", "Carts", FormMethod.Post, new { id = "checkout-details", name = "checkout-details" }))
+{
+  @Html.AntiForgeryToken()
+
+  <div class="form-horizontal">
+    <h4>Betalningsalternativ</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    @*<div class="form-group">
+        @Html.LabelFor(model => model.CartId, "CartId", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.DropDownList("CartId", null, htmlAttributes: new { @class = "form-control" })
+          @Html.ValidationMessageFor(model => model.CartId, "", new { @class = "text-danger" })
+        </div>
+      </div>*@
+
+    @*<div class="form-group">
+      @Html.LabelFor(model => model.ApplicationUser.Email, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
+      <div class="col-md-10">
+        @Html.EditorFor(modelItem => Model.ApplicationUser.Email)
+        @Html.ValidationMessageFor(model => Model.ApplicationUser.Email, "", new { @class = "text-danger" })
+      </div>
+    </div>
+
+    <div class="form-group">
+      @Html.LabelFor(model => model.UserProfile.City, "City", htmlAttributes: new { @class = "control-label col-md-2" })
+      <div class="col-md-10">
+        @Html.EditorFor(modelItem => Model.UserProfile.City)
+        @Html.ValidationMessageFor(model => Model.UserProfile.City, "", new { @class = "text-danger" })
+      </div>
+    </div>*@
+
+    @*<div class="form-group">
+        @Html.LabelFor(model => model.ApplicationUserId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.EditorFor(model => model.ApplicationUserId, new { htmlAttributes = new { @class = "form-control" } })
+          @Html.ValidationMessageFor(model => model.ApplicationUserId, "", new { @class = "text-danger" })
+        </div>
+      </div>
+
+      <div class="form-group">
+        @Html.LabelFor(model => model.UserProfileId, "UserProfileId", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+          @Html.DropDownList("UserProfileId", null, htmlAttributes: new { @class = "form-control" })
+          @Html.ValidationMessageFor(model => model.UserProfileId, "", new { @class = "text-danger" })
+        </div>
+      </div>*@
+
+    <div>Hur vill du betala?</div>
+
+
+    "Vid leverans", "Check", "Kort", "Paypal"
+    @{
+      List<SelectListItem> listItems = new List<SelectListItem>();
+      listItems.Add(new SelectListItem
+      {
+        Text = "Vid leverans",
+        Value = "Vid leverans"
+      });
+      listItems.Add(new SelectListItem
+      {
+        Text = "Check",
+        Value = "Check",
+        Selected = true
+      });
+      listItems.Add(new SelectListItem
+      {
+        Text = "Kort",
+        Value = "Kort"
+      });
+      listItems.Add(new SelectListItem
+      {
+        Text = "Paypal",
+        Value = "Paypal"
+      });
+    }
+
+    @Html.DropDownList("Payment", listItems, "-- Select Status --")
+
+
+
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+        <input type="submit" value="Lägg order" class="btn btn-default" />
+      </div>
+    </div>
+  </div>
+}
+
+<div>
+  @Html.ActionLink("Tillbaka till varukorgen", "Index")
+</div>

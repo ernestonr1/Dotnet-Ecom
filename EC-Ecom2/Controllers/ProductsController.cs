@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using EC_Ecom2.Models;
 using EC_Ecom2.Models.Products;
 using EC_Ecom2.Models.Checkout;
+using Microsoft.AspNet.Identity;
+
 
 namespace EC_Ecom2.Controllers
 {
@@ -144,7 +146,12 @@ namespace EC_Ecom2.Controllers
                 cart = new Cart();
                 cart.SessionId = sessionId;
                 cart.State = "active";
-                
+
+                if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    cart.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                }
+
                 cartItemList = new List<Cartitem>();
                 var Cartitem = new Cartitem();
                 Cartitem.ProductId = id;
@@ -164,7 +171,11 @@ namespace EC_Ecom2.Controllers
             else
             {
                 cart = existingCart.First();
-                cartItemList = cart.Cartitems;
+                if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    cart.UserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                }
+                    cartItemList = cart.Cartitems;
                 // Check if there already is a cartitem with this product id.
                 var checkCartitem = from c in db.Cartitems
                                     where c.ProductId == id && c.CartId == cart.Id

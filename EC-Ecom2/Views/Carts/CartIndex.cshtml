@@ -4,10 +4,10 @@
   ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Din varukorg</h2>
 
 <p>
-  @Html.ActionLink("Create New", "Create")
+  @*@Html.ActionLink("Create New", "Create")*@
 </p>
 <table class="table">
   <tr>
@@ -23,7 +23,7 @@
     <th>
       @Html.DisplayNameFor(model => model.Cart.UserId)
     </th>
-    <th></th>
+    @*<th></th>*@
   </tr>
 
   @*@foreach (var item in Model.Cart)
@@ -51,6 +51,7 @@
 
 </table>
 
+<h3>Dina varor</h3>
 @using (Html.BeginForm("HandleCart", "Carts", FormMethod.Post, new { id = "cartform", name = "cartform" }))
 {
   @Html.AntiForgeryToken()
@@ -58,28 +59,31 @@
 
   foreach (var item in Model.Cartitems)
   {
-    @Html.HiddenFor(modelItem => item.Product.Id)
-    @Html.HiddenFor(modelItem => item.Cart.Id)
-    @Html.HiddenFor(modelItem => item.Id)
+<div>
+  @Html.HiddenFor(modelItem => item.Product.Id)
+  @Html.HiddenFor(modelItem => item.Cart.Id)
+  @Html.HiddenFor(modelItem => item.Id)
 
-    @Html.DisplayFor(modelItem => item.Product.Id)
+  <span>Produktid: </span>@Html.DisplayFor(modelItem => item.Product.Id)
 
-    @Html.DisplayFor(modelItem => item.Product.Name)
-    <span>Cartitem total: </span>@Html.DisplayFor(modelItem => item.CartitemTotal)
+  <span>Produktnamn: </span>@Html.DisplayFor(modelItem => item.Product.Name)
+  <span>Totalt för den här varan: </span>@Html.DisplayFor(modelItem => item.CartitemTotal)
 
-    @Html.EditorFor(modelItem => item.Quantity,
-      new
+  <span>Antal: </span>@Html.EditorFor(modelItem => item.Quantity,
+    new
+    {
+      htmlAttributes = new
       {
-        htmlAttributes = new
-        {
-          @class = "form-control",
-          @id = item.Product.Id,
-          @cartId = item.Cart.Id,
-          @cartitemId = item.Id,
-          @name = "quantity"
-        }
-      })
-    // Sätt två submit-knappar. En för update och en för place order.
+        @class = "form-control",
+        @id = item.Product.Id,
+        @cartId = item.Cart.Id,
+        @cartitemId = item.Id,
+        @name = "quantity"
+      }
+    })
+  
+    </div>
+    <div>*********************************************************</div>
   }
   <input type="submit" name="submitButton" value="Uppdatera"  
          @{ if(!Model.Cartitems.Any()) { 
@@ -87,7 +91,7 @@
         } }
          /><br />
 
-  <input type="submit" name="submitButton" value="Lägg order"  
+  <input type="submit" name="submitButton" value="Checkoutdetaljer"  
          @{ if(!Model.Cartitems.Any()) { 
              @:disabled="disabled" 
         } }

@@ -5,10 +5,10 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Din varukorg</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @*@Html.ActionLink("Create New", "Create")*@
 </p>
 <table class="table">
     <tr>
@@ -42,9 +42,9 @@
             @Html.DisplayFor(modelItem => item.Cart.UserId)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Cart.Id }) |
+            @*@Html.ActionLink("Edit", "Edit", new { id=item.Cart.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Cart.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Cart.Id })
+            @Html.ActionLink("Delete", "Delete", new { id=item.Cart.Id })*@
         </td>
     </tr>
 }

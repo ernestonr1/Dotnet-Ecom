@@ -14,5 +14,9 @@ namespace EC_Ecom2.Models.Users
         public string Streetaddress { get; set; }
         public string Postalcode { get; set; }
         public string Phonenumber { get; set; }
+
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Middlename { get; set; }
     }
 }

@@ -50,5 +50,7 @@ namespace EC_Ecom2.Models
         public DbSet<UserProfile> UserProfiles { get; set; }
 
         public System.Data.Entity.DbSet<EC_Ecom2.Models.App.Admin> Admins { get; set; }
+
+        //public System.Data.Entity.DbSet<EC_Ecom2.ViewModels.Checkout.CheckoutDetailsViewModel> CheckoutDetailsViewModels { get; set; }
     }
 }

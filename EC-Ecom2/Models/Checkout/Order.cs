@@ -21,5 +21,8 @@ namespace EC_Ecom2.Models.Checkout
         public double ShippingCost { get; set; }
 
         public virtual ICollection<Orderitem> Orderitems { get; set; }
+
+        // This can have the values "Vid leverans", "Check", "Kort", "Paypal".
+        public string PaymentMethod { get; set; }
     }
 }
