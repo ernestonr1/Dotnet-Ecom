@@ -19,12 +19,30 @@ namespace EC_Ecom2
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap")
+                .Include("~/Scripts/bootstrap.js"));
+                //.Include("~/Scripts/circle-progress.min.js"));
+
+            //bundles.Add(new ScriptBundle("~/bundles/circle-progress").Include(
+            //          "~/Scripts/circle-progress.min.js"));
+            //var bundle = new ScriptBundle("~/bundles/photogallery")
+            //    .Include("~/Scripts/circle-progress.min.js")
+            //    .Include("~/Scripts/imagesloaded.pkgd.min.js")
+            //    .Include("~/Scripts/isotope.pkgd.min.js")
+            //    .Include("~/Scripts/jquery.nicescroll.min.js")
+            //    .Include("~/Scripts/main.js")
+            //    .Include("~/Scripts/owl.carousel.min.js");
+            //bundles.Add(bundle);
+    
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css"
+                      //"~/Content/css/animate.css",
+                      //"~/Content/css/font-awesome.min.css",
+                      //"~/Content/css/owl.carousel.min.css",
+                      //"~/Content/css/style.css"
+                      ));
         }
     }
 }
