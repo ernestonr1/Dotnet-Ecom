@@ -17,5 +17,10 @@ namespace EC_Ecom2
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Session_Start(Object sender, EventArgs e)
+        {
+            Session["init"] = 0;
+        }
     }
 }
