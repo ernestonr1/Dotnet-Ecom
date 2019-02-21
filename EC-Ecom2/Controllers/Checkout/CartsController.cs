@@ -381,7 +381,8 @@ namespace EC_Ecom2.Controllers.Checkout
                 cartForOrder.State = "ordered";
                 db.SaveChanges();
                 //return View("Index", "Orders");
-                return RedirectToAction("Index", "Orders");
+                //return RedirectToAction("Index", "Orders");
+                return RedirectToAction("Details", "Orders", new { id = order.Id });
                 //return View();
             }
             else

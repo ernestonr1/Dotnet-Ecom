@@ -16,6 +16,7 @@ namespace EC_Ecom2.Controllers.Checkout
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Orders
+        [Authorize(Roles = "storemanager")]
         public ActionResult Index()
         {
             return View(db.Orders.ToList());

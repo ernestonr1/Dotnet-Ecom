@@ -182,8 +182,8 @@ namespace EC_Ecom2.Controllers
                     // user to have a specific role. After that it can be commented out.
                     //var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
                     //var roleManager = new RoleManager<IdentityRole>(roleStore);
-                    //await roleManager.CreateAsync(new IdentityRole("Admin"));
-                    //await UserManager.AddToRoleAsync(user.Id, "Admin");
+                    //await roleManager.CreateAsync(new IdentityRole("storemanager"));
+                    //await UserManager.AddToRoleAsync(user.Id, "storemanager");
 
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
