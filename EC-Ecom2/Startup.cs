@@ -8,6 +8,7 @@ namespace EC_Ecom2
     {
         public void Configuration(IAppBuilder app)
         {
+					// Adding a comment
             ConfigureAuth(app);
         }
     }
